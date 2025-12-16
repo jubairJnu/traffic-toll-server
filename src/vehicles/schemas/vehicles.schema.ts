@@ -31,4 +31,4 @@ export class Vehicle {
   lastPaidAt: Date;
 }
 
-export const vehicleSchema = SchemaFactory.createForClass(Vehicle);
+export const VehicleSchema = SchemaFactory.createForClass(Vehicle);
