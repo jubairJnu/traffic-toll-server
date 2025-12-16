@@ -5,11 +5,13 @@ import { userDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AppError } from 'src/common/errors/app-error';
 import { bcryptHeler } from 'src/helpers/bcryptHelpers';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel('User') private userModel: Model<userDocument>) {}
 
+  //   create user
   async createUser(createUserDto: CreateUserDto) {
     const isExistUser = await this.userModel.findOne({
       email: createUserDto.email,
@@ -33,5 +35,29 @@ export class UsersService {
     await user.save();
 
     return user;
+  }
+
+  //    find all users
+
+  async findAllUsers() {
+    return this.userModel.find();
+  }
+
+  //   find singl user
+
+  async findSingleUser(id: string) {
+    return this.userModel.findById(id);
+  }
+
+  // update
+
+  async udpateUser(id: string, payload: UpdateUserDto) {
+    return this.userModel.findByIdAndUpdate(id, payload, { new: true });
+  }
+
+  // delte
+
+  async deleteUser(id: string) {
+    return this.userModel.findByIdAndDelete(id);
   }
 }
