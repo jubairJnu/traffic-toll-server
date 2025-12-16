@@ -6,6 +6,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { AppError } from 'src/common/errors/app-error';
 import { bcryptHeler } from 'src/helpers/bcryptHelpers';
 import { UpdateUserDto } from './dto/update-user.dto';
+import QueryBuilder from 'src/builder/QueryBuilder';
+import { uesrSearchableFields } from './user.contstance';
+import { IPaginateMeta } from 'src/interface';
 
 @Injectable()
 export class UsersService {
@@ -39,8 +42,22 @@ export class UsersService {
 
   //    find all users
 
-  async findAllUsers() {
-    return this.userModel.find();
+  async findAllUsers(
+    query: Record<string, any>,
+  ): Promise<{ result: any[]; meta: IPaginateMeta }> {
+    const resultQuery = new QueryBuilder(this.userModel.find(), query)
+      .search(uesrSearchableFields)
+      .filter()
+      .sort()
+      .paginate();
+
+    const result = await resultQuery.modelQuery;
+    const meta = await resultQuery.countTotal();
+
+    return {
+      result,
+      meta,
+    };
   }
 
   //   find singl user
