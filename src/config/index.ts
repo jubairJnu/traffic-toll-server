@@ -9,4 +9,5 @@ export default {
   jwt: {
     access_token: process.env.ACCESS_TOKEN,
   },
+  salt: process.env.SALT_ROUND,
 };
