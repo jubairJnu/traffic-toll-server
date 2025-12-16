@@ -15,9 +15,13 @@ export class RoadSegment {
   distanceKm: number;
 
   @Prop({
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'TollPlaza',
+      },
+    ],
     required: true,
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'TollPlaza',
   })
   plazes: mongoose.Schema.Types.ObjectId[];
 }
