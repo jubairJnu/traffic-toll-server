@@ -1,26 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRoadestimateDto } from './dto/create-roadestimate.dto';
 import { UpdateRoadestimateDto } from './dto/update-roadestimate.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { RoadEstimateDocument } from './schemas/roadEstimate.schema';
+import { IPaginateMeta } from 'src/interface';
+import QueryBuilder from 'src/builder/QueryBuilder';
 
 @Injectable()
 export class RoadestimateService {
-  create(createRoadestimateDto: CreateRoadestimateDto) {
-    return 'This action adds a new roadestimate';
+  constructor(
+    @InjectModel('Roadestimate')
+    private roadestimateModel: Model<RoadEstimateDocument>,
+  ) {}
+  async create(createRoadestimateDto: CreateRoadestimateDto) {
+    return await this.roadestimateModel.create(createRoadestimateDto);
   }
 
-  findAll() {
-    return `This action returns all roadestimate`;
+  async findAll(
+    query: Record<string, any>,
+  ): Promise<{ result: RoadEstimateDocument[]; meta: IPaginateMeta }> {
+    const resultQuery = new QueryBuilder(this.roadestimateModel.find(), query)
+      .search([])
+      .filter()
+      .sort()
+      .paginate();
+    const result = await resultQuery.modelQuery;
+    const meta = await resultQuery.countTotal();
+    return {
+      result,
+      meta,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} roadestimate`;
+  async findOne(id: string) {
+    return await this.roadestimateModel.findById(id);
   }
 
-  update(id: number, updateRoadestimateDto: UpdateRoadestimateDto) {
-    return `This action updates a #${id} roadestimate`;
+  async update(id: string, updateRoadestimateDto: UpdateRoadestimateDto) {
+    return await this.roadestimateModel.findByIdAndUpdate(
+      id,
+      updateRoadestimateDto,
+      { new: true },
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} roadestimate`;
+  async remove(id: string) {
+    return await this.roadestimateModel.findByIdAndDelete(id);
   }
 }
