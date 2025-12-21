@@ -1,4 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
+
+export type TollPlazaDocument = TollPlaza & Document
 
 @Schema({ timestamps: true })
 export class TollPlaza {

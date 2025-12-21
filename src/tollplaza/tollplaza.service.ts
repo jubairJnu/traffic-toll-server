@@ -1,26 +1,50 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTollplazaDto } from './dto/create-tollplaza.dto';
 import { UpdateTollplazaDto } from './dto/update-tollplaza.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { TollPlazaDocument } from './schemas/tollPlaza.schema';
+import QueryBuilder from 'src/builder/QueryBuilder';
+import { IPaginateMeta } from 'src/interface';
 
 @Injectable()
 export class TollplazaService {
-  create(createTollplazaDto: CreateTollplazaDto) {
-    return 'This action adds a new tollplaza';
+  constructor(
+    @InjectModel('TollPlaza') private tollPlazaModel: Model<TollPlazaDocument>,
+  ) {}
+
+  async create(createTollplazaDto: CreateTollplazaDto) {
+    return await this.tollPlazaModel.create(createTollplazaDto);
   }
 
-  findAll() {
-    return `This action returns all tollplaza`;
+  async findAll(
+    query: Record<string, any>,
+  ): Promise<{ result: TollPlazaDocument[]; meta: IPaginateMeta }> {
+    const resultQuery = new QueryBuilder(this.tollPlazaModel.find(), query)
+      .search(['name', 'city'])
+      .filter()
+      .sort()
+      .paginate();
+
+    const result = await resultQuery.modelQuery;
+    const meta = await resultQuery.countTotal();
+    return {
+      result,
+      meta,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tollplaza`;
+  async findOne(id: string) {
+    return await this.tollPlazaModel.findById(id);
   }
 
-  update(id: number, updateTollplazaDto: UpdateTollplazaDto) {
-    return `This action updates a #${id} tollplaza`;
+  async update(id: string, updateTollplazaDto: UpdateTollplazaDto) {
+    return await this.tollPlazaModel.findByIdAndUpdate(id, updateTollplazaDto, {
+      new: true,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tollplaza`;
+  async remove(id: string) {
+    return await this.tollPlazaModel.findByIdAndDelete(id);
   }
 }
