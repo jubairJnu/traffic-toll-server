@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
-export type RoadDocument = RoadSegment & Document;
+export type RoadSegmentDocument = RoadSegment & Document;
 
 @Schema({ timestamps: true })
 export class RoadSegment {
