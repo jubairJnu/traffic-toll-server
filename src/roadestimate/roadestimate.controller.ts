@@ -11,19 +11,32 @@ import {
 import { RoadestimateService } from './roadestimate.service';
 import { CreateRoadestimateDto } from './dto/create-roadestimate.dto';
 import { UpdateRoadestimateDto } from './dto/update-roadestimate.dto';
+import { sendResponse } from 'src/utils/sendResponse';
 
 @Controller('roadestimate')
 export class RoadestimateController {
   constructor(private readonly roadestimateService: RoadestimateService) {}
 
   @Post()
-  create(@Body() createRoadestimateDto: CreateRoadestimateDto) {
-    return this.roadestimateService.create(createRoadestimateDto);
+  async create(@Body() createRoadestimateDto: CreateRoadestimateDto) {
+    const result = await this.roadestimateService.create(createRoadestimateDto);
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'Raod estimate created successfully',
+      data: result,
+    });
   }
 
   @Get()
-  findAll(@Req() req) {
-    return this.roadestimateService.findAll(req.query);
+  async findAll(@Req() req) {
+    const result = await this.roadestimateService.findAll(req.query);
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'Road estimate retrived successfully',
+      data: result,
+    });
   }
 
   @Get(':id')
@@ -32,15 +45,30 @@ export class RoadestimateController {
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateRoadestimateDto: UpdateRoadestimateDto,
   ) {
-    return this.roadestimateService.update(id, updateRoadestimateDto);
+    const result = await this.roadestimateService.update(
+      id,
+      updateRoadestimateDto,
+    );
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'Updated',
+      data: result,
+    });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.roadestimateService.remove(id);
+  async remove(@Param('id') id: string) {
+    await this.roadestimateService.remove(id);
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'deleted',
+      data: null,
+    });
   }
 }
