@@ -2,10 +2,12 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTolleventDto } from './dto/create-tollevent.dto';
 import { UpdateTolleventDto } from './dto/update-tollevent.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { TollEventDocument } from './schemas/tollEvents.schema';
 import { vehicleDocument } from 'src/vehicles/schemas/vehicles.schema';
 import { AppError } from 'src/common/errors/app-error';
+import QueryBuilder from 'src/builder/QueryBuilder';
+import { IPaginateMeta } from 'src/interface';
 
 @Injectable()
 export class TolleventsService {
@@ -40,19 +42,55 @@ export class TolleventsService {
     return await this.tollEventModel.create(payload);
   }
 
-  findAll() {
-    return `This action returns all tollevents`;
+  async findAll(
+    query: Record<string, any>,
+  ): Promise<{ result: TollEventDocument[]; meta: IPaginateMeta }> {
+    const resultQuery = new QueryBuilder(
+      this.tollEventModel.find().populate([
+        {
+          path: 'vehicleId',
+          select: 'name',
+        },
+        {
+          path: 'plazaId',
+          select: 'name',
+        },
+      ]),
+      query,
+    )
+      .search(['plateNumber'])
+      .filter()
+      .sort()
+      .paginate();
+
+    const result = await resultQuery.modelQuery;
+    const meta = await resultQuery.countTotal();
+    return {
+      result,
+      meta,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tollevent`;
+  async findOne(id: string) {
+    return await this.tollEventModel.findById(id).populate([
+      {
+        path: 'vehicleId',
+        select: 'name',
+      },
+      {
+        path: 'plazaId',
+        select: 'name',
+      },
+    ]);
   }
 
-  update(id: number, updateTolleventDto: UpdateTolleventDto) {
-    return `This action updates a #${id} tollevent`;
+  async update(id: number, updateTolleventDto: UpdateTolleventDto) {
+    return await this.tollEventModel.findByIdAndUpdate(id, updateTolleventDto, {
+      new: true,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tollevent`;
+  async remove(id: string) {
+    return await this.tollEventModel.findByIdAndDelete(id);
   }
 }
