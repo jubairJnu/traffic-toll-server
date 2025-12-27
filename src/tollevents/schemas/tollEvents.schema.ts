@@ -7,17 +7,17 @@ export type TollEventDocument = TollEvent & Document;
 export class TollEvent {
   @Prop({
     required: true,
-    type: mongoose.Schema.Types.ObjectId,
+    type:  mongoose.Types.ObjectId,
     ref: 'Vehicle',
   })
-  vehicleId: mongoose.Schema.Types.ObjectId;
+  vehicleId:  mongoose.Types.ObjectId;
 
   @Prop({
     required: true,
-    type: mongoose.Schema.Types.ObjectId,
+    type:  mongoose.Types.ObjectId,
     ref: 'TollPlaza',
   })
-  plazaId: mongoose.Schema.Types.ObjectId;
+  plazaId:  mongoose.Types.ObjectId;
 
   @Prop({ required: true })
   plateNumber: string;

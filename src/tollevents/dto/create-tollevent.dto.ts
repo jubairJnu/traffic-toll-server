@@ -1,19 +1,27 @@
-import { IsNotEmpty, isNotEmpty, IsNumber } from 'class-validator';
+import {
+  IsMongoId,
+  IsNotEmpty,
+  isNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Types } from 'mongoose';
 
 export class CreateTolleventDto {
   @IsNotEmpty()
-  vehicleId: Types.ObjectId;
-
-  plazaId: Types.ObjectId;
+  @IsMongoId()
+  plazaId: string;
 
   @IsNotEmpty()
+  @IsString()
   plateNumber: string;
 
   eventTime: Date;
-
+  @IsOptional()
   status: string;
-
+  
+  @IsNotEmpty()
   @IsNumber()
   chargeAmount: number;
 }
