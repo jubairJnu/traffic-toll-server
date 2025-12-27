@@ -9,7 +9,7 @@ import QueryBuilder from 'src/builder/QueryBuilder';
 
 @Injectable()
 export class RoadsegmentsService {
-  @InjectModel('Roadsegment')
+  @InjectModel('RoadSegment')
   private readonly roadsegmentModel: Model<RoadSegmentDocument>;
   async create(createRoadsegmentDto: CreateRoadsegmentDto) {
     return await this.roadsegmentModel.create(createRoadsegmentDto);

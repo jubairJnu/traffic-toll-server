@@ -10,7 +10,7 @@ import QueryBuilder from 'src/builder/QueryBuilder';
 @Injectable()
 export class RoadestimateService {
   constructor(
-    @InjectModel('Roadestimate')
+    @InjectModel('RoadEstimate')
     private roadestimateModel: Model<RoadEstimateDocument>,
   ) {}
   async create(createRoadestimateDto: CreateRoadestimateDto) {

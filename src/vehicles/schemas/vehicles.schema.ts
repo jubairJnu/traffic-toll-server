@@ -33,5 +33,4 @@ export class Vehicle {
 
 export const VehicleSchema = SchemaFactory.createForClass(Vehicle);
 
-VehicleSchema.index({ plateNumber: 1 });
 VehicleSchema.index({ ownerId: 1 });

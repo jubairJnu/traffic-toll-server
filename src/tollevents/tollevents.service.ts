@@ -15,7 +15,7 @@ export class TolleventsService {
     @InjectModel('TollEvent')
     private tollEventModel: Model<TollEventDocument>,
 
-    @InjectModel('VehicleModel')
+    @InjectModel('Vehicle')
     private vehicleModel: Model<vehicleDocument>,
   ) {}
 
