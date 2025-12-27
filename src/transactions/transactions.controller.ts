@@ -1,34 +1,80 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { sendResponse } from 'src/utils/sendResponse';
 
 @Controller('transactions')
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   @Post()
-  create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.transactionsService.create(createTransactionDto);
+  async create(@Body() createTransactionDto: CreateTransactionDto) {
+    const result = await this.transactionsService.create(createTransactionDto);
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'Created transaction',
+      data: result,
+    });
   }
 
   @Get()
-  findAll() {
-    return this.transactionsService.findAll();
+  async findAll(@Req() req) {
+    const result = await this.transactionsService.findAll(req.query);
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'retrived transaction',
+      data: result,
+    });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.transactionsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const result = await this.transactionsService.findOne(id);
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'retrived transaction',
+      data: result,
+    });
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTransactionDto: UpdateTransactionDto) {
-    return this.transactionsService.update(+id, updateTransactionDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateTransactionDto: UpdateTransactionDto,
+  ) {
+    const result = await this.transactionsService.update(
+      id,
+      updateTransactionDto,
+    );
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'updated transaction',
+      data: result,
+    });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.transactionsService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const result = await this.transactionsService.remove(id);
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'Created transaction',
+      data: result,
+    });
   }
 }
