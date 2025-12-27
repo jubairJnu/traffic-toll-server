@@ -84,7 +84,7 @@ export class TolleventsService {
     ]);
   }
 
-  async update(id: number, updateTolleventDto: UpdateTolleventDto) {
+  async update(id: string, updateTolleventDto: UpdateTolleventDto) {
     return await this.tollEventModel.findByIdAndUpdate(id, updateTolleventDto, {
       new: true,
     });

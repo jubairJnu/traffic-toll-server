@@ -1,34 +1,77 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { TolleventsService } from './tollevents.service';
 import { CreateTolleventDto } from './dto/create-tollevent.dto';
 import { UpdateTolleventDto } from './dto/update-tollevent.dto';
+import { sendResponse } from 'src/utils/sendResponse';
 
 @Controller('tollevents')
 export class TolleventsController {
   constructor(private readonly tolleventsService: TolleventsService) {}
 
   @Post()
-  create(@Body() createTolleventDto: CreateTolleventDto) {
-    return this.tolleventsService.create(createTolleventDto);
+  async create(@Body() createTolleventDto: CreateTolleventDto) {
+    const result = await this.tolleventsService.create(createTolleventDto);
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'created toll event',
+      data: result,
+    });
   }
 
   @Get()
-  findAll() {
-    return this.tolleventsService.findAll();
+  async findAll(@Req() req) {
+    const result = await this.tolleventsService.findAll(req.query);
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'retrived toll event',
+      data: result,
+    });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tolleventsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const result = await this.tolleventsService.findOne(id);
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'retrived toll event',
+      data: result,
+    });
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTolleventDto: UpdateTolleventDto) {
-    return this.tolleventsService.update(+id, updateTolleventDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateTolleventDto: UpdateTolleventDto,
+  ) {
+    const result = await this.tolleventsService.update(id, updateTolleventDto);
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'updated toll event',
+      data: result,
+    });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tolleventsService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const result = await this.tolleventsService.remove(id);
+    return sendResponse({
+      success: true,
+      statusCode: 200,
+      message: 'deleted toll event',
+      data: result,
+    });
   }
 }
