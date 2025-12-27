@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import config from '../config';
 const encryptPassword = async (plain: string): Promise<string> => {
   const saltRounds = Number(config.salt);
