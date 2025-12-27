@@ -1,12 +1,20 @@
-import { IsMongoId, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsMongoId,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
+import { PaymentType, TransactionPurpose } from '../transaction.constance';
 
 export class CreateTransactionDto {
   @IsNotEmpty()
   @IsNumber()
   amount: number;
 
-  @IsString()
-  purpose: string;
+  @IsNotEmpty()
+  @IsEnum(TransactionPurpose)
+  purpose: TransactionPurpose;
 
   @IsNotEmpty()
   @IsMongoId()
@@ -17,6 +25,6 @@ export class CreateTransactionDto {
   submitBy: string;
 
   @IsNotEmpty()
-  @IsString()
-  paymentType: string;
+  @IsEnum(PaymentType)
+  paymentType: PaymentType;
 }

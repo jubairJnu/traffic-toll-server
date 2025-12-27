@@ -4,6 +4,8 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { TransactionDocument } from './schemas/transaction.schema';
+import { IPaginateMeta } from 'src/interface';
+import QueryBuilder from 'src/builder/QueryBuilder';
 
 @Injectable()
 export class TransactionsService {
@@ -12,23 +14,45 @@ export class TransactionsService {
     private transactionModel: Model<TransactionDocument>,
   ) {}
 
- async create(createTransactionDto: CreateTransactionDto) {
-    return 'This action adds a new transaction';
+  async create(createTransactionDto: CreateTransactionDto) {
+    return await this.transactionModel.create(createTransactionDto);
   }
 
-  findAll() {
-    return `This action returns all transactions`;
+  async findAll(
+    query: Record<string, any>,
+  ): Promise<{ result: TransactionDocument[]; meta: IPaginateMeta }> {
+    const resultQuery = new QueryBuilder(
+      this.transactionModel.find().populate('submitBy', 'name'),
+      query,
+    )
+      .filter()
+      .sort()
+      .paginate();
+
+    const result = await resultQuery.modelQuery;
+    const meta = await resultQuery.countTotal();
+    return {
+      result,
+      meta,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
+  async findOne(id: string) {
+    return await this.transactionModel
+      .findById(id)
+      .populate('submitBy', 'name')
+      .populate('serviceId');
   }
 
-  update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    return `This action updates a #${id} transaction`;
+  async update(id: string, updateTransactionDto: UpdateTransactionDto) {
+    return await this.transactionModel.findByIdAndUpdate(
+      id,
+      updateTransactionDto,
+      { new: true },
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} transaction`;
+  async remove(id: string) {
+    return await this.transactionModel.findByIdAndDelete(id);
   }
 }

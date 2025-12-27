@@ -1,28 +1,41 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { PaymentType, TransactionPurpose } from '../transaction.constance';
 
 export type TransactionDocument = Transaction & Document;
 
 @Schema({ timestamps: true })
 export class Transaction {
-  @Prop()
-  amount: { type: Number; required: true };
+  @Prop({ type: Number, required: true })
+  amount: number;
 
-  @Prop()
-  purpose: { type: String; enum: ['prepaid', 'payment', 'fine', 'withdraw'] };
+  @Prop({
+    type: String,
+    enum: TransactionPurpose,
+    required: true,
+  })
+  purpose: TransactionPurpose;
 
-  @Prop()
-  serviceId: {
-    type: mongoose.Types.ObjectId;
-    required: true;
-    ref: 'TollEvent';
-  };
+  @Prop({
+    type: mongoose.Types.ObjectId,
+    ref: 'TollEvent',
+    required: true,
+  })
+  serviceId: mongoose.Types.ObjectId;
 
-  @Prop()
-  submitBy: { type: mongoose.Types.ObjectId; ref: 'User'; required: true };
+  @Prop({
+    type: mongoose.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  })
+  submitBy: mongoose.Types.ObjectId;
 
-  @Prop()
-  paymentType: { type: String; enum: ['debit', 'credit'] };
+  @Prop({
+    type: String,
+    enum: PaymentType,
+    required: true,
+  })
+  paymentType: PaymentType;
 }
 
 export const TransactionSchema = SchemaFactory.createForClass(Transaction);
